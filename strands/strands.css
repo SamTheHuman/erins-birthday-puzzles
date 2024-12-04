@@ -1,0 +1,131 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  background-color: #f7f7f7;
+}
+
+.theme-box {
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #AEDFEE;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.theme-header {
+  background-color: #AEDFEE;
+  color: black;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.theme-content {
+  background-color: white;
+  color: black;
+  font-size: 20px;
+  text-align: center;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.game-container {
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.selected-word {
+  height: 5px;  /*Reserve space for the selected word display */
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px; /* Space between the selected word display and the game board */
+  color: #333;
+  text-align: center;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(6, 40px);
+  grid-template-rows: repeat(8, 40px);
+  gap: 5px;
+  justify-content: center;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  font-size: 20px;
+  /*font-weight: bold;*/
+  cursor: pointer;
+  user-select: none;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  z-index: 2;
+}
+
+.cell-text {
+  position: relative;
+  z-index: 3;
+  font-size: 18px;
+  color: black;
+}
+
+.line-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Ensure lines are below cells */
+}
+
+.line {
+  position: absolute;
+  background-color: black;
+  height: 8px; /* Thickness of the lines */
+}
+
+.cell.selected {
+  background-color: #DBD8C5;
+  color: white;
+}
+
+.cell.found {
+  background-color: #AEDFEE;
+  color: black;
+}
+
+.message {
+  height: 5px;
+  font-weight: bold;
+  color: green;
+  text-align: center;
+}
+
+.counter {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}

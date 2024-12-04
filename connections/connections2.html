@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erin's Birthday Connections</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #5A594E;
+        }
+
+        /* Connections Game Styles */
+        #gameBoard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px; /* Gap between columns */
+            margin: 20px auto;
+            width: 80%;
+        }
+        .card {
+            width: 100%;
+            height: 75px; /* Height of each card */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid #EFEFE6;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #EFEFE6;
+            transition: background-color 0.3s;
+            text-transform: uppercase;
+            font-family: 'Arial Semibold';
+            box-sizing: border-box; /* Ensure padding does not affect overall width */
+            padding: 0 10px;
+        }
+        .selected {
+            background-color: #5A594E;
+            border: 1px solid #5A594E;
+            color: white;
+        }
+        #message {
+            margin-top: 20px;
+        }
+        .button-container {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 15px;
+            border: 1px solid #5A594E;
+        }
+        .category-card {
+            grid-column: span 4; /* Make the category card span the width of the board */
+            height: 75px; /* Height of category cards */
+            display: flex;
+            flex-direction: column; /* Stack lines vertically */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #EFEFE6;
+            border-radius: 5px;
+            font-family: 'Arial Semibold', Arial, sans-serif;
+            font-size: 16px;
+        }
+        .category-card .category-name {
+            font-weight: bold;
+            margin-bottom: 2px; /* Small gap between lines */
+        }
+        .category-card .words-list {
+            font-size: 14px; /* Slightly smaller font for the word list */
+            text-transform: none; /* Remove text transformation */
+        }
+    </style>
+</head>
+<body>
+    <h1>Erin's Birthday Connections!</h1>
+    <div id="gameBoard"></div>
+    <div id="message"></div>
+    
+    <div class="button-container">
+        <button onclick="shuffleWords()">Shuffle</button>
+        <button onclick="deselectAll()">Deselect All</button>
+        <button onclick="submitSelection()">Submit</button>
+    </div>
+    <div class="button-container">
+        <button id="main-menu-button">Main Menu</button>
+    </div>
+
+    <script>
+        // Updated remaining words, categories, and category colors
+        let remainingWords = [
+            "Movie Theater", "Public Library", "National Arboretum", "Kennedy Center",
+            "Popcorn", "Pistachios", "Flax Chips", "PB Cups",
+            "Dirty Players", "Added Sugar", "Sam's Music", "Small Holes",
+            "Fashion", "Watching Movies", "Soccer", "Themed Events"
+        ];
+
+        const categories = {
+            FavoriteSnacks: ["Popcorn", "Pistachios", "Flax Chips", "PB Cups"],
+            DateLocations: ["Movie Theater", "Public Library", "National Arboretum", "Kennedy Center"],
+            Likes: ["Fashion", "Watching Movies", "Soccer", "Themed Events"],
+            Dislikes: ["Dirty Players", "Added Sugar", "Sam's Music", "Small Holes"]
+        };
+
+        const categoryColors = {
+            FavoriteSnacks: "#F9DF6D",
+            Likes: "#A0C35A",
+            DateLocations: "#B0C4EF",
+            Dislikes: "#BA81C5"
+        };
+
+        let selectedWords = [];
+        let identifiedCategories = []; // Stores identified categories in the order they are guessed
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function shuffleWords() {
+            selectedWords = [];
+            document.querySelectorAll('.selected').forEach(card => card.classList.remove('selected'));
+
+            createGameBoard(); // Create the game board without identified words
+        }
+
+        function createGameBoard() {
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+
+            // Add already identified categories at the top
+            identifiedCategories.forEach(category => {
+                const categoryCard = document.createElement('div');
+                categoryCard.style.backgroundColor = categoryColors[category];
+                categoryCard.className = 'category-card';
+
+                const wordsInCategory = categories[category].join(', ');
+                categoryCard.innerHTML = `
+                    <div class="category-name">${category}</div>
+                    <div class="words-list">${wordsInCategory}</div>
+                `;
+                gameBoard.appendChild(categoryCard);
+            });
+
+            // Shuffle and display remaining words
+            shuffleArray(remainingWords);
+            remainingWords.forEach(word => {
+                const card = document.createElement('div');
+                card.textContent = word;
+                card.className = 'card';
+                card.onclick = () => selectWord(word, card);
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function selectWord(word, card) {
+            if (selectedWords.includes(word)) {
+                selectedWords = selectedWords.filter(w => w !== word);
+                card.classList.remove('selected');
+            } else {
+                if (selectedWords.length < 4) {
+                    selectedWords.push(word);
+                    card.classList.add('selected');
+                }
+            }
+        }
+
+        function deselectAll() {
+            selectedWords = [];
+            document.querySelectorAll('.selected').forEach(card => card.classList.remove('selected'));
+        }
+
+        function submitSelection() {
+            const message = document.getElementById('message');
+            if (selectedWords.length === 4) {
+                let isCorrect = false;
+                let categoryName = '';
+                for (const [category, words] of Object.entries(categories)) {
+                    if (selectedWords.every(word => words.includes(word))) {
+                        isCorrect = true;
+                        categoryName = category;
+                        break;
+                    }
+                }
+
+                if (isCorrect && !identifiedCategories.includes(categoryName)) {
+                    identifiedCategories.push(categoryName); // Store identified category
+                    removeIdentifiedWords(selectedWords); // Remove selected words from remaining words
+                    createGameBoard(); // Refresh the game board
+                    message.textContent = 'Correct! Great job!';
+                } else if (isCorrect && identifiedCategories.includes(categoryName)) {
+                    message.textContent = 'You have already identified this category.';
+                } else {
+                    message.textContent = 'Try again!';
+                }
+                deselectAll();
+            } else {
+                message.textContent = 'Please select four words.';
+            }
+        }
+
+        function removeIdentifiedWords(words) {
+            // Filter out identified words from remainingWords array
+            remainingWords = remainingWords.filter(word => !words.includes(word));
+        }
+
+        createGameBoard();
+    </script>
+</body>
+</html>
