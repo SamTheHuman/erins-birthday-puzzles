@@ -95,7 +95,14 @@ function updateClueBox(selectedCell) {
 // Toggle selection mode (row or column) based on the selected cell
 function toggleSelectionMode(cell) {
     const isAlreadySelected = cell.classList.contains("selected");
-
+    
+    // Focus the cell to show the keyboard on mobile devices
+    const cellContent = cell.querySelector('.cell-content');
+    if (cellContent) {
+        cellContent.setAttribute('contenteditable', 'true');
+        cellContent.focus();
+    }
+    
     // Clear all styles
     document.querySelectorAll(".cell").forEach((cell) => {
         cell.classList.remove("selected", "highlight");
@@ -136,6 +143,14 @@ function highlightColumn(col) {
 // Handle keyboard input
 function handleKeyPress(e) {
     const selectedCell = document.querySelector(".cell.selected");
+
+    if (selectedCell) {
+        const cellContent = selectedCell.querySelector('.cell-content');
+        if (cellContent) {
+            cellContent.setAttribute('contenteditable', 'false');
+        }
+    }
+    
     if (!selectedCell) return;
 
     const currentRow = parseInt(selectedCell.dataset.row, 10);
