@@ -95,14 +95,7 @@ function updateClueBox(selectedCell) {
 // Toggle selection mode (row or column) based on the selected cell
 function toggleSelectionMode(cell) {
     const isAlreadySelected = cell.classList.contains("selected");
-    
-    // Focus the cell to show the keyboard on mobile devices
-    const cellContent = cell.querySelector('.cell-content');
-    if (cellContent) {
-        cellContent.setAttribute('contenteditable', 'true');
-        cellContent.focus();
-    }
-    
+
     // Clear all styles
     document.querySelectorAll(".cell").forEach((cell) => {
         cell.classList.remove("selected", "highlight");
@@ -140,54 +133,45 @@ function highlightColumn(col) {
     });
 }
 
-// Handle keyboard input
-function handleKeyPress(e) {
-    const selectedCell = document.querySelector(".cell.selected");
+// Keyboard implementation
+const keyboard = [
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Del"],
+    ["Enter", "Z", "X", "C", "V", "B", "N", "M", "⌫"]
+];
 
-    if (selectedCell) {
-        const cellContent = selectedCell.querySelector('.cell-content');
-        if (cellContent) {
-            cellContent.setAttribute('contenteditable', 'false');
-        }
-    }
-    
+function createKeyboard() {
+    const keyboardContainer = document.getElementById('keyboard-container');
+
+    keyboard.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.classList.add('keyboard-row');
+
+        row.forEach(key => {
+            const keyDiv = document.createElement('div');
+            keyDiv.classList.add(key === "Enter" ? 'enter-key-tile' : 'key-tile');
+            keyDiv.textContent = key;
+
+            // Add functionality for the keys
+            keyDiv.addEventListener('click', () => handleKeyPress(key));
+            rowDiv.appendChild(keyDiv);
+        });
+
+        keyboardContainer.appendChild(rowDiv);
+    });
+}
+
+function handleKeyPress(key) {
+    const selectedCell = document.querySelector(".cell.selected");
     if (!selectedCell) return;
 
-    const currentRow = parseInt(selectedCell.dataset.row, 10);
-    const currentCol = parseInt(selectedCell.dataset.col, 10);
+        const currentRow = parseInt(selectedCell.dataset.row, 10);
+        const currentCol = parseInt(selectedCell.dataset.col, 10);
 
-    let nextRow = currentRow;
-    let nextCol = currentCol;
+        let nextRow = currentRow;
+        let nextCol = currentCol;
 
-    if (e.key === "Enter") {
-        if (isRowMode) {
-            // Move to the first non-disabled cell in the next row
-            nextRow = (currentRow + 1) % gridSize;
-            nextCol = 0; // Start from the first column
-            while (document.querySelector(`.cell[data-row='${nextRow}'][data-col='${nextCol}']`)
-                ?.classList.contains("disabled")) {
-                nextCol++;
-                if (nextCol >= gridSize) break; // Prevent infinite loop
-            }
-        } else {
-            // Move to the first non-disabled cell in the next column
-            nextCol = (currentCol + 1) % gridSize;
-            nextRow = 0; // Start from the first row
-            while (document.querySelector(`.cell[data-row='${nextRow}'][data-col='${nextCol}']`)
-                ?.classList.contains("disabled")) {
-                nextRow++;
-                if (nextRow >= gridSize) break; // Prevent infinite loop
-            }
-        }
-        // Move selection to the next valid cell
-        const nextCell = document.querySelector(
-            `.cell[data-row='${nextRow}'][data-col='${nextCol}']`
-        );
-        if (nextCell && !nextCell.classList.contains("disabled")) {
-            toggleSelectionMode(nextCell);
-        }
-    } else if (e.key === "Backspace") {
-        e.preventDefault();
+    if (key === "⌫") {
         const cellContent = selectedCell.querySelector(".cell-content");
         if (cellContent.textContent) {
             // Case 1: Clear the current cell if it contains text
@@ -222,19 +206,50 @@ function handleKeyPress(e) {
                 toggleSelectionMode(prevCell); // Select the previous cell
             }
         }
-    } else if (e.key === "Delete") {
-        e.preventDefault();
+    } else if (key === "Del") {
         const cellContent = selectedCell.querySelector(".cell-content");
         if (cellContent) {
             cellContent.textContent = ""; // Clear current cell
         }
-    } else if (e.key.length === 1 && e.key.toUpperCase() >= "A" && e.key.toUpperCase() <= "Z") {
+    } else if (key === "Enter") {
+        if (isRowMode) {
+            // Move to the first non-disabled cell in the next row
+            nextRow = (currentRow + 1) % gridSize;
+            nextCol = 0; // Start from the first column
+            while (document.querySelector(`.cell[data-row='${nextRow}'][data-col='${nextCol}']`)
+                ?.classList.contains("disabled")) {
+                nextCol++;
+                if (nextCol >= gridSize) break; // Prevent infinite loop
+            }
+        } else {
+            // Move to the first non-disabled cell in the next column
+            nextCol = (currentCol + 1) % gridSize;
+            nextRow = 0; // Start from the first row
+            while (document.querySelector(`.cell[data-row='${nextRow}'][data-col='${nextCol}']`)
+                ?.classList.contains("disabled")) {
+                nextRow++;
+                if (nextRow >= gridSize) break; // Prevent infinite loop
+            }
+        }
+        // Move selection to the next valid cell
+        const nextCell = document.querySelector(
+            `.cell[data-row='${nextRow}'][data-col='${nextCol}']`
+        );
+        if (nextCell && !nextCell.classList.contains("disabled")) {
+            toggleSelectionMode(nextCell);
+        }
+    } else if (key.length === 1 && key.toUpperCase() >= "A" && key.toUpperCase() <= "Z") {
         const cellContent = selectedCell.querySelector(".cell-content");
-        cellContent.textContent = e.key.toUpperCase();
+        cellContent.textContent = key.toUpperCase();
         cellContent.style.color = "black";
         moveToNextNonDisabledCell(selectedCell);
+    } else {
+        
     }
 }
+
+// Initialize the keyboard
+createKeyboard();
 
 // Button actions
 document.getElementById("check-puzzle-button").addEventListener("click", checkPuzzle);
