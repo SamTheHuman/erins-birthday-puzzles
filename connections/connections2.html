@@ -21,9 +21,8 @@
             max-width: 800px; /* Maximum width for larger screens */
         }
         .card {
-            width: calc(100% / 4 - 15px); /* Dynamically adjust card width */;
-            height: calc(100% / 4 - 15px); /* Ensure cards are square */
-            /*height: 75px;  Height of each card */
+            width: 100%;
+            height: 75px;  /* Height of each card */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -60,8 +59,7 @@
         .category-card {
             grid-column: span 4; /* Make the category card span the width of the board */
             width: 100%;
-            aspect-ratio: 4/1;
-            /*height: 75px; Height of category cards */
+            height: 75px; /* Height of category cards */
             display: flex;
             flex-direction: column; /* Stack lines vertically */
             justify-content: center;
