@@ -17,11 +17,13 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 15px; /* Gap between columns */
             margin: 20px auto;
-            width: 80%;
+            width: 90%;
+            max-width: 800px; /* Maximum width for larger screens */
         }
         .card {
             width: 100%;
-            height: 75px; /* Height of each card */
+            aspect-ratio: 4/3;
+            /*height: 75px;  Height of each card */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -57,7 +59,9 @@
         }
         .category-card {
             grid-column: span 4; /* Make the category card span the width of the board */
-            height: 75px; /* Height of category cards */
+            width: 100%;
+            aspect-ratio: 4/3;
+            /*height: 75px; Height of category cards */
             display: flex;
             flex-direction: column; /* Stack lines vertically */
             justify-content: center;
@@ -69,12 +73,13 @@
             font-size: 16px;
         }
         .category-card .category-name {
-            font-weight: bold;
+            font-family: 'Arial Semibold';
+            font-size: 18px;
             margin-bottom: 2px; /* Small gap between lines */
         }
         .category-card .words-list {
+            font-family: Arial, sans-serif;
             font-size: 14px; /* Slightly smaller font for the word list */
-            font-weight: normal;
             text-transform: none; /* Remove text transformation */
         }
     </style>
