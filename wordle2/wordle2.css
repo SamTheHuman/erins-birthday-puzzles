@@ -4,7 +4,7 @@ body{
    justify-content: center;
 }
 hr {
-    width: 500px;
+    width: fit-content;
     color:#787c7e
 }
 #title {
