@@ -3,10 +3,6 @@ body{
    text-align: center;
    justify-content: center;
 }
-hr {
-    width: fit-content;
-    color:#787c7e
-}
 #title {
     font-size: 36px;
     font-weight: bold;
